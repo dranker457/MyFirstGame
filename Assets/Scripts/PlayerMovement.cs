@@ -7,6 +7,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float gravity = -9.81f;
 
+    [Header("ジャンプ設定")]
+    [SerializeField] private float jumpHeight = 1.5f;
+
     private CharacterController _controller;
     private Vector3 _velocity;
 
@@ -28,9 +31,13 @@ public class PlayerMovement : MonoBehaviour
 
         _controller.Move(move * moveSpeed * Time.deltaTime);
 
-        // 重力
+        // 重力・ジャンプ
         if (_controller.isGrounded && _velocity.y < 0f)
             _velocity.y = -2f;
+
+        // Spaceキーでジャンプ（接地中のみ）
+        if (Input.GetButtonDown("Jump") && _controller.isGrounded)
+            _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
         _velocity.y += gravity * Time.deltaTime;
         _controller.Move(_velocity * Time.deltaTime);
